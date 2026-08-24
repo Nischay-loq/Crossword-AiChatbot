@@ -16,14 +16,14 @@ User Message
      │
      ▼
 [RAG Retriever]
-     ├── Embeds query (text-embedding-3-small)
+     ├── Embeds query (all-MiniLM-L6-v2)
      ├── Queries ChromaDB (pre-filtered: customer_facing=True only)
      ├── Re-ranks by authority_score (active+official > superseded > draft/internal)
      ├── Detects genuine conflicts between active authoritative sources
      └── Returns formatted passages labeled as <RETRIEVED_DATA> (injection defense)
      │
      ▼
-[LLM Caller — GPT-4o-mini with function calling]
+[LLM Caller — Google Gemini API with function calling]
      ├── System prompt (hardcoded, not from KB)
      ├── Conversation history (last 10 turns)
      ├── Retrieved passages (labeled as untrusted data)
@@ -59,7 +59,7 @@ User Message
 | Component | Choice |
 |---|---|
 | Language | Python 3.10+ |
-| LLM | **Groq API — llama-3.3-70b-versatile (FREE)** |
+| LLM | **Google Gemini API — gemini-flash-lite-latest (FREE)** |
 | Embeddings | **sentence-transformers all-MiniLM-L6-v2 (local, FREE)** |
 | Vector store | ChromaDB (local, persistent) |
 | RAG framework | LangChain |
@@ -88,8 +88,8 @@ pip install -r requirements.txt
 ### 2. Set environment variables
 
 ```bash
-# Edit .env and add your GROQ_API_KEY
-# Get it FREE at https://console.groq.com → API Keys
+# Edit .env and add your GEMINI_API_KEY
+# Get it FREE at https://aistudio.google.com/apikey → Create API Key
 ```
 
 ### 3. Build the knowledge base index (run once)
@@ -216,7 +216,7 @@ pytest eval/ --tb=short -q
 
 4. **Evaluation is deterministic but shallow.** `must_include_concepts` checks for literal substrings, which means a paraphrase of a required concept might not be caught. A hybrid approach (substring + lightweight NLI model) would be more robust.
 
-5. **Retrieval context window.** With 14 KB files, the full retrieved context is well within the 128K context window of GPT-4o-mini. If the KB grows significantly, context management (e.g., BM25 hybrid retrieval, MMR) would be needed.
+5. **Retrieval context window.** With 14 KB files, the full retrieved context is well within the 1M context window of Gemini. If the KB grows significantly, context management (e.g., BM25 hybrid retrieval, MMR) would be needed.
 
 6. **ChromaDB is local only.** For production, a managed vector store (Pinecone, Weaviate, or pgvector) would be needed.
 
@@ -234,8 +234,8 @@ pytest eval/ --tb=short -q
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `GROQ_API_KEY` | ✅ | — | Groq API key (**FREE** at console.groq.com) |
-| `GROQ_MODEL` | No | `llama-3.3-70b-versatile` | Groq chat model |
+| `GEMINI_API_KEY` | ✅ | — | Google Gemini API key (**FREE** at aistudio.google.com/apikey) |
+| `GEMINI_MODEL` | No | `gemini-flash-lite-latest` | Gemini chat model |
 | `EMBEDDING_MODEL` | No | `all-MiniLM-L6-v2` | Local embedding model (free, no API) |
 | `CHROMA_PERSIST_DIR` | No | `.chroma_db` | ChromaDB storage path |
 | `KNOWLEDGE_BASE_DIR` | No | `knowledge-base` | KB directory |
