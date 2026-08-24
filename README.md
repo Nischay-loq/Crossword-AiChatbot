@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/ccfa5bf2-71d7-478f-8803-e4836fea78ae
+
 # Aster & Row AI Support Agent
 
 A reliable RAG-based customer support agent for Aster & Row, built as an intern take-home assessment.
